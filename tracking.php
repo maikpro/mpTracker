@@ -20,6 +20,16 @@ function createArray($string){
     return $teile;
 }
 
+function getUrlsToMark(){
+    $counter = esc_attr( get_option("trackerCounter") );
+    $arr=array();
+    for ($i = 1; $i <= $counter; $i++) {
+        $urlTracker = esc_attr( get_option('trackerUrl_'. $i)  );
+        array_push($arr, $urlTracker);
+    }
+    return $arr;
+}
+
 function filter_Referrer($arr){
     $filtered_arr = array_filter ($arr, 'mpFilter');
     return $filtered_arr;
@@ -41,6 +51,8 @@ function mp_testing(){
         $urlTracker = esc_attr( get_option('trackerUrl') );
         var_dump($urlTracker);
     }
+
+    var_dump(getUrlsToMark());
 }*/
 
 
@@ -71,7 +83,8 @@ function checkout_referrer($order){
     $urlTracker = esc_attr( get_option('trackerUrl') );
     echo '<p><strong>'.__('Referrer').':</strong> <br></p>';
     foreach ($filtered_arr as &$value){
-        if( strpos($value, $urlTracker) ){
+        //if( strpos($value, $urlTracker) ){
+        if(in_array($value, getUrlsToMark(), false)){
             echo "<p><span style='color:" . $colorTracker . ";'>" . $value  . '</span></p>';
         } else{
             echo "<p>" . $value  . '</p>';

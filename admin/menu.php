@@ -139,7 +139,8 @@ function mpTracking_options(){
 
 function register_inputfields(){
     register_setting( "mptracking-settings-group", "filterTextbox");
-    register_setting( "mptracking-settings-group", "counter");
+
+    
 
     /*Cookie Timer*/
     register_setting( "mptracking-settings-group", "cookieTimer" );
@@ -148,10 +149,14 @@ function register_inputfields(){
     register_setting( "mptracking-settings-group", "trackerColor" );
 
     /*Url Tracking*/
-    register_setting( "mptracking-settings-group", "trackerUrl" );
-    /*for ($i = 1; $i <= 10; $i++) {
-        register_setting( "mptracking-settings-group", "newInputBox_" . $i);
-    }*/
+    //register_setting( "mptracking-settings-group", "trackerUrl" );
+    
+    for ($i = 1; $i <= 10; $i++) {
+        register_setting( "mptracking-settings-group", "trackerUrl_" . $i);
+    }
+
+    //Counter
+    register_setting( "mptracking-settings-group", "trackerCounter");
     
 }
 
@@ -170,10 +175,37 @@ function trackingColor(){
 }
 
 function trackingUrl(){
-    $urlTracker = esc_attr( get_option('trackerUrl') );
+    $counter = getCounter();
+    //$counter = 10;
+
+    echo "<div id='urlBox' class='mpTrackerUrls'>";
+    for ($i = 1; $i <= $counter; $i++) {
+        $urlTracker = esc_attr( get_option('trackerUrl_'. $i)  );
+        
+        echo "<div id='urlInput_". $i ."'>"
+        . "<input type='text' id='trackerUrl_" . $i ."' name='trackerUrl_". $i ."' value='" . $urlTracker ."' placeholder='google.com'>";
+        
+        //Fügt Button nur an letzten Input an!
+        if($i == $counter){
+            echo "<div class='buttonBox' id='buttonBox_" . $i ."'>"
+            . "<button id='addFilter'><span class='dashicons dashicons-plus-alt'></span></button>"
+            . "<button style='margin-left: 5px;' id='deleteFilter'><span class='dashicons dashicons-dismiss'></span></button>"
+            . "<span id='alertText'></span>"
+            . "</div><br>";
+        } else{
+            echo "</div><br>";
+        }
+    }
+    echo "</div>";
+    echo "</div>";
+    echo "<p>Anzahl URLs: <input style='border:none;'' id='trackerCounter' name='trackerCounter' value='" . $counter .  "' readonly></p>"
+    . "";
     
-    echo "<input type='text' id='trackerUrl' name='trackerUrl' value='" . $urlTracker ."' placeholder='google.com'>"
-    . "<p>Die getrackte Webseite</p>";
+}
+
+function getCounter(){
+    $counter = esc_attr( get_option("trackerCounter") );
+    return $counter;
 }
 
 

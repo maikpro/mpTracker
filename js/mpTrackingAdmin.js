@@ -1,97 +1,176 @@
-console.log("js script embedded!");
-
 const MAX = 10;
 
-var button = document.getElementById("addFilter");
-var filterText = document.getElementById("filterText");
-var filterAlert = document.getElementById("filterAlert");
-var filterTextbox = document.getElementById("filterTextbox");
-var filterTable = document.querySelector("#filterTable > tbody");
-var filters = document.getElementById("filters");
-var clearTextBoxButton = document.getElementById("clearTextbox");
+var oldCounter;
+var lastParent;
 
-var inputCounter = document.getElementById("counter"); 
-console.log( inputCounter  );
+var addButton = document.getElementById("addFilter");
+var deleteButton = document.getElementById("deleteFilter");
 
-if(inputCounter.innerText < 1 || ""){
-    inputCounter.innerText = 0;
+var urlBox = document.getElementById("urlBox");
+
+var counter = parseInt(document.getElementById("trackerCounter").value); 
+
+var alertText = document.getElementById("alertText");
+
+var currentInput = document.getElementById("trackerUrl_" + counter);
+
+
+
+function refreshCounter(){
+    console.log(counter);
+    document.getElementById("trackerCounter").value = counter;
+    currentInput = document.getElementById("trackerUrl_" + counter);
 }
 
-button.addEventListener("click", function(e){
+function refreshAdd(){
+    addButton = document.getElementById("addFilter");
+    if( counter == 10){
+        addButton.style.display = "none";
+    } else{
+        addButton.style.display = "inline-block";
+    }
+}
+
+
+function refreshDelete(){
+    deleteButton = document.getElementById("deleteFilter");
+    if( counter == 1){
+        deleteButton.style.display = "none";
+    } else{
+        deleteButton.style.display = "inline-block";
+    }
+}
+
+
+
+
+addButton.addEventListener("click", function(e){
+
     e.preventDefault();
+
     console.log("clicked!");
-    console.log("Length: " + filterText.value.length)
-    console.log(parseInt(inputCounter.innerText));
-    
-    if(parseInt(inputCounter.innerText) >= MAX){
+
+    console.log( counter  );
+
+    if(parseInt(counter) >= MAX){
+
         filterAlertInfo("warn", "maximale Grenze " + MAX + " erreicht!");
+
         console.log("maximum erreicht!");
-    } else if(filterText.value.length == 0){
+
+    } else if(currentInput.value.length == 0){
         filterAlertInfo("warn", "Eingabe ist leer!");
         console.log("leer!");
     } else{
+
         filterAlertInfo("success");
+
         console.log("hinzufügen!");
-        addTextToBox();
-        /*addTextToTable();*/
-        addFilter();
-        clear();
+
+        addInput();
+
+        refreshDelete();
+        refreshCounter();
+        refreshAdd();
+        //clear();
+
     }
+    
 });
 
-function addTextToBox(){
-    filterTextbox.value += filterText.value + "\n";
-}
-
-function addTextToTable(){
-    let newRow = filterTable.insertRow(-1);
-    let newCell = newRow.insertCell(0);
-    let text = document.createTextNode(filterText.value);
-    newCell.appendChild(text);
-}
-
-function addFilter(){
-    let div = addInput();
-    //addDelete(div);
-}
-
 function addInput(){
+    counter++;
     let newInputBox = document.createElement('div');
-    let newInput = "<input type='text' name='newInputBox_"+ inputCounter.innerText + "' id='newInputBox_" + inputCounter.innerText +"' value='" + filterText.value  + "' readonly>";
+    newInputBox.id = "urlInput_" + counter;
+    let newInput = "<input type='text' id='trackerUrl_" + counter + "' name='trackerUrl_" + counter + "' value='' placeholder='google.com'>";
     newInputBox.innerHTML = newInput;
-    filters.appendChild(newInputBox);
-    inputCounter.innerText = parseInt(inputCounter.innerText) + 1;
-    return newInputBox;
-}
+    urlBox.appendChild(newInputBox);
+    moveButtonBoxDown();
+    refreshCounter();
 
-function addDelete(div){
-    let deleteButton = document.createElement('button');
-    deleteButton.id = "deleteButton";
-    deleteButton.innerText = "Löschen";
-    div.appendChild(deleteButton);
+    /*
+    echo "<div id='urlInput_". $i ."'>"
+        . "<input type='text' id='trackerUrl_" . $i ."' name='trackerUrl_". $i ."' value='" . $urlTracker ."' placeholder='google.com'>";
+    */
 }
 
 function clear(){
-    filterText.value = "";
+    alertText.value = "";
 }
 
 function filterAlertInfo(alert, info){
+
     if( alert === "success" ){
+
         console.log("JAA!");
-        filterAlert.innerText = "Filter hinzugefügt!";
-        filterAlert.style.color = "green";
-        filterText.style.border = "2px solid green";
+
+        alertText.innerText = "Filter hinzugefügt!";
+
+        //alertText.style.color = "green";
+
+        //currentInput.style.border = "2px solid green";
+
     } else if(alert === "warn"){
+
         console.log("NEEEIN!");
-        filterAlert.innerText = info;
-        filterAlert.style.color = "red";
-        filterText.style.border = "2px solid red";
+
+        alertText.innerText = info;
+
+        alertText.style.color = "red";
+
+        currentInput.style.border = "2px solid red";
+
     }
 
     /*Nach 5 Sekunden leeren*/
-    setTimeout(function(){  
-        filterAlert.innerText = "";
-        filterText.style.border = "";
 
-    }, 2000);
+    setTimeout(function(){  
+
+        alertText.innerText = "";
+
+        currentInput.style.border = "";
+
+    }, 3500);
+
+}
+
+deleteButton.addEventListener("click", function(e){
+    e.preventDefault();
+
+    console.log("counter: " + counter);
+    if( counter > 1 ){
+        console.log("delete trackerUrl_" + counter);
+        
+        oldCounter=counter;
+        
+        moveButtonBoxUp();
+        deleteInput();
+        refreshDelete();
+        refreshAdd();
+    } 
+});
+
+function deleteInput(){
+    console.log(lastParent.children);
+    lastParent.remove();
+    refreshCounter();
+}
+
+function moveButtonBoxUp(){
+    let buttonBox = document.getElementById("buttonBox_" + counter);
+    let preLastInput = document.getElementById("urlInput_" + (counter-1) );
+    lastParent = deleteButton.parentElement.parentElement;
+    preLastInput.appendChild(buttonBox);
+    counter--;
+    buttonBox.id = "buttonBox_" + counter;
+}
+
+function moveButtonBoxDown(){
+    let buttonBox = document.getElementById("buttonBox_" + (counter-1) );
+    console.log(buttonBox)
+    let nextInput = document.getElementById("urlInput_" + counter );
+    console.log(nextInput)
+    //nextInput = addButton.parentElement.parentElement;
+    nextInput.appendChild(buttonBox);
+    buttonBox.id = "buttonBox_" + counter;
 }

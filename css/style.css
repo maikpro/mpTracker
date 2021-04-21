@@ -16,19 +16,16 @@
 
 
 
-#deleteButton{
-
+#deleteFilter{
     background-color: crimson;
-
-    color: #FFF;
-
-    width: 90px;
-
-    height: 25px;
-
 }
 
-#trackerUrl{
+.mpTrackerUrls input{
     width: 450px;
+    margin: 5px;
+}
+
+.buttonBox{
+    display: inline-block;
 }
 
