@@ -1,0 +1,34 @@
+.mpTrackingFilter input{
+
+    margin: 5px;
+
+    width: 450px;
+
+}
+
+
+
+.mpTrackingFilter #filterAlert{
+
+    margin: 5px;
+
+}
+
+
+
+#deleteButton{
+
+    background-color: crimson;
+
+    color: #FFF;
+
+    width: 90px;
+
+    height: 25px;
+
+}
+
+#trackerUrl{
+    width: 450px;
+}
+
